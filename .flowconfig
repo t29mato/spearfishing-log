@@ -6,6 +6,3 @@ flow-typed
 
 [version]
 0.93.0
-
-[options]
-esproposal.decorators=ignore

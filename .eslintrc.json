@@ -8,5 +8,5 @@
     "react/jsx-uses-react": 1,
     "no-extra-semi": "warn",
     "quotes": ["warn", "single"]
-  },
+  }
 }
