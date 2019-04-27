@@ -1,0 +1,3 @@
+declareee mooodule 'react-native' {
+  declare module.exports: any
+}

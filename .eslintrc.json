@@ -1,0 +1,12 @@
+{
+  "extends": "expo",
+  "plugins": [
+    "react"
+  ],
+  "rules": {
+    "react/jsx-uses-vars": 1,
+    "react/jsx-uses-react": 1,
+    "no-extra-semi": "warn",
+    "quotes": ["warn", "single"]
+  },
+}
