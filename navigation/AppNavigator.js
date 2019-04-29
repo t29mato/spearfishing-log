@@ -1,9 +1,8 @@
 // @flow
 
-import React from 'react';
-import { View, Text } from 'react-native';
 import { createAppContainer, createStackNavigator } from 'react-navigation';
 import ReportCreateScreen from '../screens/ReportCreateScreen';
+import ReportDetailScreen from '../screens/ReportDetailScreen';
 import CalendarSelectScreen from '../screens/CalendarSelectScreen';
 import MainBottomTabNavigator from './MainBottomTabNavigator';
 
@@ -13,6 +12,7 @@ export default createAppContainer(
       MainBottomTabNavigator,
       ReportCreateScreen,
       CalendarSelectScreen,
+      ReportDetailScreen,
     },
     {
       initialRouteName: 'MainBottomTabNavigator',

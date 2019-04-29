@@ -22,23 +22,11 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 
 const db = SQLite.openDatabase('db');
 
-function _insertReport(date, entryTime, exitTime, diary) {
-  db.transaction(tx => {
-    tx.executeSql('insert into reports (date, entryTime, exitTime, diary) values (?, ?, ?, ?);', [
-      date,
-      entryTime,
-      exitTime,
-      diary,
-    ]),
-      () => console.log('success'),
-      error => console.log(error);
-  });
-}
-
 export default class ReportCreateScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
+
   state = {
     isVisibleEntryTimePicker: false,
     isVisibleExitTimePicker: false,
@@ -66,6 +54,23 @@ export default class ReportCreateScreen extends React.Component {
     this._toggleModalExitTime();
   };
   render() {
+    const moveToReportDetail = (tx, data) => {
+      this.props.navigation.navigate('ReportDetailScreen', { reportId: data.insertId });
+    };
+
+    const _createReport = (date, entryTime, exitTime, diary) => {
+      db.transaction(tx => {
+        tx.executeSql(
+          'insert into reports (date, entryTime, exitTime, diary) values (?, ?, ?, ?);',
+          [date, entryTime, exitTime, diary],
+          moveToReportDetail,
+          error => {
+            alert(error);
+          }
+        );
+      });
+    };
+
     return (
       <Container>
         <Header>
@@ -81,13 +86,12 @@ export default class ReportCreateScreen extends React.Component {
             <Button
               transparent
               onPress={() => {
-                _insertReport(
+                _createReport(
                   this.props.navigation.getParam('date'),
                   this.state.entryTime,
                   this.state.exitTime,
                   this.state.diary
                 );
-                this.props.navigation.navigate('ReportListScreen');
                 this.props.navigation.state.params.refresh();
               }}>
               <Text>保存</Text>
