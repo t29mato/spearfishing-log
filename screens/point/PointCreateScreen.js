@@ -31,21 +31,16 @@ export default class PointCreateScreen extends React.Component {
     header: null,
   };
 
-  state = {
-    name: null,
-    coordinate: null,
-    memo: null,
-  };
   render() {
     const moveToReportDetail = (tx, data) => {
       this.props.navigation.navigate('ReportDetailScreen', { pointId: data.insertId });
     };
 
-    const _createPoint = (name, coordinate, memo) => {
+    const _createPoint = (name, memo) => {
       db.transaction(tx => {
         tx.executeSql(
-          'insert into reports (name, coordinate, memo) values (?, ?, ?);',
-          [name, coordinate, memo],
+          'insert into reports (name, memo) values (?, ?);',
+          [name, memo],
           moveToReportDetail,
           error => {
             alert(error);
@@ -76,53 +71,48 @@ export default class PointCreateScreen extends React.Component {
           </Right>
         </Header>
         <Content>
-          <Text>{JSON.stringify(this.state)}</Text>
-          <List>
-            <ListItem
-              onPress={() =>
-                this.props.navigation.navigate('PointNameEditScreen', {
-                  name: this.props.navigation.getParam('name'),
-                })
-              }>
-              <Left>
-                <Icon active name={'place'} type={'MaterialIcons'} />
-                <Text>名称 (必須)</Text>
-              </Left>
-              <Body>
-                {this.props.navigation.getParam('name') ? (
-                  <Text>{this.props.navigation.getParam('name')}</Text>
-                ) : (
-                  <Text style={{ color: 'grey' }}>例）〇〇海岸</Text>
-                )}
-              </Body>
-              <Right>
-                <Icon active name={'arrow-forward'} />
-              </Right>
-            </ListItem>
-            <ListItem
-              onPress={() =>
-                this.props.navigation.navigate('PointMemoEditScreen', {
-                  memo: this.props.navigation.getParam('memo'),
-                })
-              }>
-              <Left>
-                <Icon active name={'note'} type={'MaterialIcons'} />
-                <Text>メモ</Text>
-              </Left>
-              <Body>
-                {this.props.navigation.getParam('memo') ? (
-                  <Text>{this.props.navigation.getParam('memo')}</Text>
-                ) : (
-                  <Text style={{ color: 'grey' }}>
-                    ポイントの特徴や見れる魚の種類を記入しましょう
-                  </Text>
-                )}
-              </Body>
-              <Right>
-                <Icon active name={'arrow-forward'} />
-              </Right>
-            </ListItem>
-          </List>
+          <ListItem itemDivider>
+            <Text>名称 (必須)</Text>
+          </ListItem>
+          <ListItem
+            onPress={() =>
+              this.props.navigation.navigate('PointNameEditScreen', {
+                name: this.props.navigation.getParam('name'),
+              })
+            }>
+            <Body>
+              {this.props.navigation.getParam('name') ? (
+                <Text>{this.props.navigation.getParam('name')}</Text>
+              ) : (
+                <Text style={{ color: 'grey' }}>例）〇〇海岸</Text>
+              )}
+            </Body>
+            <Right>
+              <Icon active name={'arrow-forward'} />
+            </Right>
+          </ListItem>
+          <ListItem itemDivider>
+            <Text>メモ</Text>
+          </ListItem>
+          <ListItem
+            onPress={() =>
+              this.props.navigation.navigate('PointMemoEditScreen', {
+                memo: this.props.navigation.getParam('memo'),
+              })
+            }>
+            <Body>
+              {this.props.navigation.getParam('memo') ? (
+                <Text>{this.props.navigation.getParam('memo')}</Text>
+              ) : (
+                <Text style={{ color: 'grey' }}>
+                  ポイントの特徴や見れる魚の種類を記入しましょう
+                </Text>
+              )}
+            </Body>
+            <Right>
+              <Icon active name={'arrow-forward'} />
+            </Right>
+          </ListItem>
         </Content>
       </Container>
     );
