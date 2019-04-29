@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { Container, Content, List, ListItem, Text } from 'native-base';
-import BottomTabbar from '../components/BottomTabbar';
 
 export default class CatchListScreen extends React.Component {
   render() {
@@ -21,7 +20,6 @@ export default class CatchListScreen extends React.Component {
             </ListItem>
           </List>
         </Content>
-        <BottomTabbar navigation={this.props.navigation} />
       </Container>
     );
   }
