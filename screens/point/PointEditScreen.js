@@ -46,28 +46,48 @@ export default class PointCreateScreen extends React.Component {
         return null;
       }
       db.transaction(tx => {
-        // tx.executeSql('drop table if exists points;', null, alert('success'), (_, msg) => alert('failed' + JSON.stringify(msg)));
         tx.executeSql(
-          'create table if not exists points (id integer primary key not null, name text, memo text);'
-        ),
-          null,
-          tx.executeSql(
-            'UPDATE points SET name = ?, memo = ? WHERE id = ?;',
-            [name, memo, id],
-            (_, rows) => {
-              this.setState({
-                point: Object.assign(this.state.point, {
-                  name,
-                  memo,
-                }),
-              });
-              this.props.navigation.pop();
-            },
-            (_, msg) => {
-              alert(JSON.stringify(msg));
-            }
-          );
+          'UPDATE points SET name = ?, memo = ? WHERE id = ?;',
+          [name, memo, id],
+          (_, rows) => {
+            this.setState({
+              point: Object.assign(this.state.point, { name, memo }),
+            });
+            this.props.navigation.pop();
+          },
+          (_, msg) => Alert.alert('ポイントの編集に失敗しました。')
+        );
       });
+    };
+    const _deletePoint = id => {
+      Alert.alert(
+        'ポイント削除',
+        'ポイントを本当に削除しますか？',
+        [
+          {
+            text: 'キャンセル',
+            onPress: () => {
+              return null;
+            },
+          },
+          {
+            text: 'OK',
+            onPress: () => {
+              db.transaction(tx => {
+                tx.executeSql(
+                  'DELETE FROM points WHERE id = ?;',
+                  [id],
+                  (_, rows) => {
+                    this.props.navigation.pop(2);
+                  },
+                  (_, msg) => Alert.alert('ポイントの削除に失敗しました。')
+                );
+              });
+            },
+          },
+        ],
+        { cancelable: true }
+      );
     };
     return (
       <Container>
@@ -96,7 +116,8 @@ export default class PointCreateScreen extends React.Component {
           <ListItem itemDivider>
             <Text>名称 (必須)</Text>
           </ListItem>
-          <ListItem last
+          <ListItem
+            last
             onPress={() =>
               this.props.navigation.navigate('PointNameEditScreen', {
                 point: this.state.point,
@@ -117,7 +138,8 @@ export default class PointCreateScreen extends React.Component {
           <ListItem itemDivider>
             <Text>メモ</Text>
           </ListItem>
-          <ListItem last
+          <ListItem
+            last
             onPress={() =>
               this.props.navigation.navigate('PointMemoEditScreen', {
                 point: this.state.point,
@@ -137,6 +159,15 @@ export default class PointCreateScreen extends React.Component {
               <Icon active name={'arrow-forward'} />
             </Right>
           </ListItem>
+          <Button
+            full
+            danger
+            onPress={() => {
+              _deletePoint(this.state.point.id);
+              this.props.navigation.state.params.refresh();
+            }}>
+            <Text>ポイントを削除する</Text>
+          </Button>
         </Content>
       </Container>
     );
