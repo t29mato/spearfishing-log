@@ -24,7 +24,7 @@ export default createAppContainer(
       PointMemoEditScreen,
     },
     {
-      initialRouteName: 'PointCreateScreen',
+      initialRouteName: 'MainBottomTabNavigator',
     }
   )
 );

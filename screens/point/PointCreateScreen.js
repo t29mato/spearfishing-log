@@ -32,20 +32,25 @@ export default class PointCreateScreen extends React.Component {
   };
 
   render() {
-    const moveToReportDetail = (tx, data) => {
-      this.props.navigation.navigate('ReportDetailScreen', { pointId: data.insertId });
+    const moveToPointDetail = (tx, data) => {
+      this.props.navigation.navigate('PointDetailScreen', { pointId: data.insertId });
     };
 
     const _createPoint = (name, memo) => {
       db.transaction(tx => {
+        // tx.executeSql('drop table if exists points;', null, alert('success'), (_, msg) => alert('failed' + JSON.stringify(msg)));
         tx.executeSql(
-          'insert into reports (name, memo) values (?, ?);',
-          [name, memo],
-          moveToReportDetail,
-          error => {
-            alert(error);
-          }
-        );
+          'create table if not exists points (id integer primary key not null, name text, memo text);'
+        ),
+          null,
+          tx.executeSql(
+            'insert into points (name, memo) values (?, ?);',
+            [name, memo],
+            moveToPointDetail,
+            (_, msg) => {
+              alert(JSON.stringify(msg));
+            }
+          );
       });
     };
     return (
@@ -63,7 +68,10 @@ export default class PointCreateScreen extends React.Component {
             <Button
               transparent
               onPress={() => {
-                this._createPoint(this.state.name, this.state.coordinate, this.state.memo);
+                _createPoint(
+                  this.props.navigation.getParam('name'),
+                  this.props.navigation.getParam('memo')
+                );
                 this.props.navigation.state.params.refresh();
               }}>
               <Text>保存</Text>

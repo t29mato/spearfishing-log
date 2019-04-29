@@ -24,21 +24,21 @@ export default class ReportDetailScreen extends React.Component {
     header: null,
   };
   state = {
-    report: null,
+    point: null,
   };
   componentWillMount() {
     db.transaction(tx => {
-      // tx.executeSql('drop table if exists reports;', null, alert('success'), (_, msg) => alert('failed' + JSON.stringify(msg)));
+      // tx.executeSql('drop table if exists points;', null, alert('success'), (_, msg) => alert('failed' + JSON.stringify(msg)));
       tx.executeSql(
-        'create table if not exists reports (id integer primary key not null, date text, entryTime text, exitTime text, diary text);'
+        'create table if not exists points (id integer primary key not null, date text, entryTime text, exitTime text, diary text);'
       ),
         null,
         tx.executeSql(
-          'select * from reports where id == ?',
+          'select * from points where id == ?',
           [this.props.navigation.getParam('reportId')],
           (_, { rows: { _array } }) => {
             console.log(JSON.stringify(_array));
-            this.setState({ reports: _array });
+            this.setState({ points: _array });
           }
         ),
         (_, error) => console.log(error);
@@ -72,7 +72,7 @@ export default class ReportDetailScreen extends React.Component {
         <Content>
           <List>
             <ListItem>
-              <Text>{JSON.stringify(this.state.reports)}</Text>
+              <Text>{JSON.stringify(this.state.points)}</Text>
             </ListItem>
           </List>
         </Content>
