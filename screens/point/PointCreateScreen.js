@@ -22,7 +22,7 @@ import {
   Input,
 } from 'native-base';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import {  TextInput  } from 'react-native';
+import { TextInput } from 'react-native';
 
 const db = SQLite.openDatabase('db');
 
@@ -53,7 +53,6 @@ export default class PointCreateScreen extends React.Component {
         );
       });
     };
-
     return (
       <Container>
         <Header>
@@ -77,14 +76,24 @@ export default class PointCreateScreen extends React.Component {
           </Right>
         </Header>
         <Content>
+          <Text>{JSON.stringify(this.state)}</Text>
           <List>
-            <ListItem>
+            <ListItem
+              onPress={() =>
+                this.props.navigation.navigate('PointNameEditScreen', {
+                  name: this.props.navigation.getParam('name'),
+                })
+              }>
               <Left>
                 <Icon active name={'star'} type={'MaterialIcons'} />
-                <Text>名称</Text>
+                <Text>名称 (必須)</Text>
               </Left>
               <Body>
-                <Text>{this.state.name}</Text>
+                {this.props.navigation.getParam('name') ? (
+                  <Text>{this.props.navigation.getParam('name')}</Text>
+                ) : (
+                  <Text style={{ color: 'grey' }}>例）〇〇海岸</Text>
+                )}
               </Body>
               <Right>
                 <Icon active name={'arrow-forward'} />
