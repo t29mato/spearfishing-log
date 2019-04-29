@@ -3,7 +3,9 @@
 import React from 'react';
 import { Container, Content, List, ListItem, Text } from 'native-base';
 
-export default class SettingsScreen extends React.Component {
+type Props = {};
+
+export default class SettingsScreen extends React.Component<Props> {
   render() {
     return (
       <Container>

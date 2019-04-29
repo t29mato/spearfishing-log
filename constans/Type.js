@@ -1,0 +1,16 @@
+export type CatchType = {
+  id: number,
+  date: Date,
+  time: Date,
+  fishTypeId: number,
+  fishSize: string,
+  fishWeight: string,
+  pointId: string,
+  weather: string,
+  temperature: string,
+  wind: string,
+  waterTemperature: string,
+  waterDepth: string,
+  clarity: string,
+  memo: string,
+}

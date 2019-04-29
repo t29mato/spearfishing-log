@@ -14,7 +14,7 @@ const MainBottomTabNavigator = createBottomTabNavigator(
     SettingsScreen,
   },
   {
-    initialRouteName: 'PointListScreen',
+    initialRouteName: 'CatchListScreen',
     navigationOptions: {
       header: null,
     },
