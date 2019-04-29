@@ -1,10 +1,10 @@
 // @flow
 
 import { createBottomTabNavigator } from 'react-navigation';
-import ReportListScreen from '../screens/ReportListScreen';
-import CatchListScreen from '../screens/CatchListScreen';
-import SettingsScreen from '../screens/SettingsScreen';
-import PointListScreen from '../screens/PointListScreen';
+import ReportListScreen from '../screens/report/ReportListScreen';
+import CatchListScreen from '../screens/catch/CatchListScreen';
+import SettingsScreen from '../screens/settings/SettingsScreen';
+import PointListScreen from '../screens/point/PointListScreen';
 
 const MainBottomTabNavigator = createBottomTabNavigator(
   {
@@ -14,7 +14,7 @@ const MainBottomTabNavigator = createBottomTabNavigator(
     SettingsScreen,
   },
   {
-    initialRouteName: 'ReportListScreen',
+    initialRouteName: 'PointListScreen',
     navigationOptions: {
       header: null,
     },
