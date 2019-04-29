@@ -88,6 +88,9 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
   returnFishTypeId(fishTypeId: number) {
     this.setState({ catch: Object.assign(this.state.catch, { fishTypeId }) });
   }
+  returnFishSize(fishSize: number) {
+    this.setState({ catch: Object.assign(this.state.catch, { fishSize }) });
+  }
 
   render() {
     const _createPoint = (name, memo) => {
@@ -230,28 +233,29 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
               <Icon active name={'arrow-forward'} />
             </Right>
           </ListItem>
-
           <ListItem
-            last
             onPress={() =>
-              this.props.navigation.navigate('PointMemoEditScreen', {
-                point: this.state.catch,
-                // returnMemo: this.returnMemo.bind(this),
+              this.props.navigation.navigate('FishSizeInputScreen', {
+                catch: this.state.catch,
+                returnFishSize: this.returnFishSize.bind(this),
               })
             }>
+            <Left style={{ width: 80 }}>
+              <Text>サイズ</Text>
+            </Left>
             <Body>
-              {this.state.catch.memo ? (
-                <Text>{this.state.catch.memo}</Text>
+              {this.state.catch.fishSize ? (
+                <Text>{this.state.catch.fishSize + 'cm'}</Text>
               ) : (
-                <Text style={{ color: 'grey' }}>
-                  ポイントの特徴や見れる魚の種類を記入しましょう
-                </Text>
+                <Text style={{ color: 'grey' }}>未入力</Text>
               )}
             </Body>
             <Right>
               <Icon active name={'arrow-forward'} />
             </Right>
           </ListItem>
+
+
         </Content>
       </Container>
     );

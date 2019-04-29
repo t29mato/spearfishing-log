@@ -11,17 +11,13 @@ import {
   Right,
   Button,
   Icon,
-  Form,
-  Textarea,
   ListItem,
   Text,
   Item,
   Input,
-  Card,
   CardItem,
 } from 'native-base';
 import { FlatList } from 'react-native';
-import { CatchType } from '../../constans/Type';
 import fishTypes from '../../data/master/fishTypes';
 
 type Props = {
