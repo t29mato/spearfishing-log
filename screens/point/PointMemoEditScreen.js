@@ -16,14 +16,15 @@ import {
   Input,
   Label,
   Item,
+  Textarea,
 } from 'native-base';
 
-export default class PointNameEditScreen extends React.Component {
+export default class PointMemoEditScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
   state = {
-    name: null,
+    memo: null,
   };
   render() {
     return (
@@ -33,24 +34,26 @@ export default class PointNameEditScreen extends React.Component {
             <Button
               transparent
               onPress={() =>
-                this.props.navigation.navigate('PointCreateScreen', { name: this.state.name })
+                this.props.navigation.navigate('PointCreateScreen', { memo: this.state.memo })
               }>
               <Icon name="arrow-back" />
             </Button>
           </Left>
           <Body>
-            <Title>ポイント名称</Title>
+            <Title>ポイントのメモ</Title>
           </Body>
           <Right />
         </Header>
         <Content padder>
-          <Item regular>
-            <Input
-              onChangeText={text => this.setState({ name: text })}
-              defaultValue={this.props.navigation.getParam('name')}
-              maxLength={20}
+          <Form>
+            <Textarea
+              rowSpan={5}
+              bordered
+              placeholder="ポイントの特徴や見れる魚の種類を記入しましょう"
+              onChangeText={text => this.setState({ memo: text })}
+              defaultValue={this.props.navigation.getParam('memo')}
             />
-          </Item>
+          </Form>
         </Content>
       </Container>
     );

@@ -85,7 +85,7 @@ export default class PointCreateScreen extends React.Component {
                 })
               }>
               <Left>
-                <Icon active name={'star'} type={'MaterialIcons'} />
+                <Icon active name={'place'} type={'MaterialIcons'} />
                 <Text>名称 (必須)</Text>
               </Left>
               <Body>
@@ -99,26 +99,19 @@ export default class PointCreateScreen extends React.Component {
                 <Icon active name={'arrow-forward'} />
               </Right>
             </ListItem>
-            <ListItem>
-              <Left>
-                <Icon active name={'place'} type={'MaterialIcons'} />
-                <Text>座標</Text>
-              </Left>
-              <Body>
-                <Text>{this.state.coordinate}</Text>
-              </Body>
-              <Right>
-                <Icon active name={'arrow-forward'} />
-              </Right>
-            </ListItem>
-            <ListItem>
+            <ListItem
+              onPress={() =>
+                this.props.navigation.navigate('PointMemoEditScreen', {
+                  memo: this.props.navigation.getParam('memo'),
+                })
+              }>
               <Left>
                 <Icon active name={'note'} type={'MaterialIcons'} />
                 <Text>メモ</Text>
               </Left>
               <Body>
-                {this.state.memo ? (
-                  <Text>this.state.memo</Text>
+                {this.props.navigation.getParam('memo') ? (
+                  <Text>{this.props.navigation.getParam('memo')}</Text>
                 ) : (
                   <Text style={{ color: 'grey' }}>
                     ポイントの特徴や見れる魚の種類を記入しましょう
