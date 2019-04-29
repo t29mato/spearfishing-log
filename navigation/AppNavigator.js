@@ -9,7 +9,7 @@ import CalendarSelectScreen from '../screens/report/CalendarSelectScreen';
 import MainBottomTabNavigator from './MainBottomTabNavigator';
 import PointNameEditScreen from '../screens/point/PointNameEditScreen';
 import PointMemoEditScreen from '../screens/point/PointMemoEditScreen';
-
+import PointEditScreen from '../screens/point/PointEditScreen';
 
 export default createAppContainer(
   createStackNavigator(
@@ -22,6 +22,7 @@ export default createAppContainer(
       PointDetailScreen,
       PointNameEditScreen,
       PointMemoEditScreen,
+      PointEditScreen,
     },
     {
       initialRouteName: 'MainBottomTabNavigator',

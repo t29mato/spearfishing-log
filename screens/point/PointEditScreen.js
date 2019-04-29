@@ -16,6 +16,7 @@ import {
   Button,
 } from 'native-base';
 import { Alert } from 'react-native';
+
 const db = SQLite.openDatabase('db');
 
 export default class PointCreateScreen extends React.Component {
@@ -24,11 +25,7 @@ export default class PointCreateScreen extends React.Component {
   };
 
   state = {
-    point: {
-      id: null,
-      name: null,
-      memo: null,
-    },
+    point: this.props.navigation.getParam('point'),
   };
 
   returnName(name) {
@@ -43,7 +40,7 @@ export default class PointCreateScreen extends React.Component {
   }
 
   render() {
-    const _createPoint = (name, memo) => {
+    const _editPoint = (name, memo, id) => {
       if (!name) {
         Alert.alert('名称は必須です');
         return null;
@@ -55,20 +52,16 @@ export default class PointCreateScreen extends React.Component {
         ),
           null,
           tx.executeSql(
-            'insert into points (name, memo) values (?, ?);',
-            [name, memo],
+            'UPDATE points SET name = ?, memo = ? WHERE id = ?;',
+            [name, memo, id],
             (_, rows) => {
               this.setState({
                 point: Object.assign(this.state.point, {
-                  id: rows.insertId,
                   name,
                   memo,
                 }),
               });
-              this.props.navigation.navigate('PointDetailScreen', {
-                point: this.state.point,
-                refresh: this.props.navigation.state.params.refresh,
-              });
+              this.props.navigation.pop();
             },
             (_, msg) => {
               alert(JSON.stringify(msg));
@@ -85,14 +78,15 @@ export default class PointCreateScreen extends React.Component {
             </Button>
           </Left>
           <Body>
-            <Title>ポイント作成</Title>
+            <Title>ポイント編集</Title>
           </Body>
           <Right>
             <Button
               transparent
               onPress={() => {
-                _createPoint(this.state.point.name, this.state.point.memo);
+                _editPoint(this.state.point.name, this.state.point.memo, this.state.point.id);
                 this.props.navigation.state.params.refresh();
+                this.props.navigation.state.params.returnPoint();
               }}>
               <Text>保存</Text>
             </Button>

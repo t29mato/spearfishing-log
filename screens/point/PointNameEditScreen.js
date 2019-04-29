@@ -4,7 +4,6 @@ import React from 'react';
 import {
   Container,
   Content,
-  Text,
   Header,
   Body,
   Title,
@@ -12,9 +11,7 @@ import {
   Right,
   Button,
   Icon,
-  Form,
   Input,
-  Label,
   Item,
 } from 'native-base';
 
@@ -22,8 +19,9 @@ export default class PointNameEditScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
+
   state = {
-    name: null,
+    point: this.props.navigation.getParam('point'),
   };
   render() {
     return (
@@ -32,9 +30,10 @@ export default class PointNameEditScreen extends React.Component {
           <Left>
             <Button
               transparent
-              onPress={() =>
-                this.props.navigation.navigate('PointCreateScreen', { name: this.state.name })
-              }>
+              onPress={() => {
+                this.props.navigation.state.params.returnName(this.state.point.name);
+                this.props.navigation.pop();
+              }}>
               <Icon name="arrow-back" />
             </Button>
           </Left>
@@ -46,8 +45,8 @@ export default class PointNameEditScreen extends React.Component {
         <Content padder>
           <Item regular>
             <Input
-              onChangeText={text => this.setState({ name: text })}
-              defaultValue={this.props.navigation.getParam('name')}
+              onChangeText={text => this.setState({ point: { name: text } })}
+              defaultValue={this.state.point.name}
               maxLength={20}
             />
           </Item>

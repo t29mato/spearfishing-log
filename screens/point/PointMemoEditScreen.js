@@ -4,7 +4,6 @@ import React from 'react';
 import {
   Container,
   Content,
-  Text,
   Header,
   Body,
   Title,
@@ -13,9 +12,6 @@ import {
   Button,
   Icon,
   Form,
-  Input,
-  Label,
-  Item,
   Textarea,
 } from 'native-base';
 
@@ -24,7 +20,7 @@ export default class PointMemoEditScreen extends React.Component {
     header: null,
   };
   state = {
-    memo: null,
+    point: this.props.navigation.getParam('point'),
   };
   render() {
     return (
@@ -33,9 +29,10 @@ export default class PointMemoEditScreen extends React.Component {
           <Left>
             <Button
               transparent
-              onPress={() =>
-                this.props.navigation.navigate('PointCreateScreen', { memo: this.state.memo })
-              }>
+              onPress={() => {
+                this.props.navigation.state.params.returnMemo(this.state.point.memo);
+                this.props.navigation.pop();
+              }}>
               <Icon name="arrow-back" />
             </Button>
           </Left>
@@ -50,8 +47,8 @@ export default class PointMemoEditScreen extends React.Component {
               rowSpan={5}
               bordered
               placeholder="ポイントの特徴や見れる魚の種類を記入しましょう"
-              onChangeText={text => this.setState({ memo: text })}
-              defaultValue={this.props.navigation.getParam('memo')}
+              onChangeText={text => this.setState({ point: { memo: text } })}
+              defaultValue={this.state.point.memo}
             />
           </Form>
         </Content>

@@ -4,7 +4,6 @@ import React from 'react';
 import {
   Container,
   Content,
-  List,
   ListItem,
   Text,
   Header,
@@ -15,37 +14,23 @@ import {
   Button,
   Icon,
 } from 'native-base';
-import { SQLite } from 'expo';
-
-const db = SQLite.openDatabase('db');
 
 export default class ReportDetailScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
+
   state = {
-    point: null,
+    point: this.props.navigation.getParam('point'),
   };
-  componentWillMount() {
-    db.transaction(tx => {
-      // tx.executeSql('drop table if exists points;', null, alert('success'), (_, msg) => alert('failed' + JSON.stringify(msg)));
-      tx.executeSql(
-        'create table if not exists points (id integer primary key not null, date text, entryTime text, exitTime text, diary text);'
-      ),
-        null,
-        tx.executeSql(
-          'select * from points where id == ?',
-          [this.props.navigation.getParam('reportId')],
-          (_, { rows: { _array } }) => {
-            console.log(JSON.stringify(_array));
-            this.setState({ points: _array });
-          }
-        ),
-        (_, error) => console.log(error);
+
+  returnPoint(point) {
+    this.setState({
+      point: Object.assign(this.state.point, { point }),
     });
   }
+
   render() {
-    // alert(this.props.navigation.getParam('reportId'));
     return (
       <Container>
         <Header>
@@ -55,26 +40,39 @@ export default class ReportDetailScreen extends React.Component {
             </Button>
           </Left>
           <Body>
-            <Title>突行詳細 {this.props.navigation.getParam('reportId')}</Title>
+            <Title>{this.state.point.name}</Title>
           </Body>
           <Right>
             <Button
               transparent
               onPress={() => {
-                this.props.navigation.navigate('CalendarSelectScreen', {
-                  refresh: this.componentWillMount.bind(this),
+                this.props.navigation.navigate('PointEditScreen', {
+                  point: this.state.point,
+                  returnPoint: this.returnPoint.bind(this),
+                  refresh: this.props.navigation.state.params.refresh,
                 });
               }}>
-              <Icon name={'add'} />
+              <Text>編集</Text>
             </Button>
           </Right>
         </Header>
         <Content>
-          <List>
-            <ListItem>
-              <Text>{JSON.stringify(this.state.points)}</Text>
-            </ListItem>
-          </List>
+          <ListItem itemDivider>
+            <Text>名称</Text>
+          </ListItem>
+          <ListItem last>
+            <Body>
+              <Text>{this.state.point.name}</Text>
+            </Body>
+          </ListItem>
+          <ListItem itemDivider>
+            <Text>メモ</Text>
+          </ListItem>
+          <ListItem last>
+            <Body>
+              <Text>{this.state.point.memo}</Text>
+            </Body>
+          </ListItem>
         </Content>
       </Container>
     );
