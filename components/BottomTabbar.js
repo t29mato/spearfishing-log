@@ -3,7 +3,6 @@
 import React from 'react';
 import { Text, Footer, FooterTab, Button, Card, CardItem, Body, Left, Right } from 'native-base';
 import Modal from 'react-native-modal';
-import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 
 export default class BottomTabbar extends React.Component {
   state = {
@@ -18,20 +17,18 @@ export default class BottomTabbar extends React.Component {
     return (
       <Footer>
         <FooterTab>
-          <Button onPress={() => this.props.navigation.navigate('CatchListScreen')}>
-            <Text>{JSON.stringify(this.state.isModalVisible)}</Text>
-          </Button>
-          <Button>
-            <Text>2</Text>
+          <Button
+            active={this.props.navigation.state.routeName === 'ReportListScreen'}
+            onPress={() => this.props.navigation.navigate('ReportListScreen')}>
+            <Text>突行一覧</Text>
           </Button>
           <Button onPress={() => this._toggleModal()}>
             <Text>記録</Text>
           </Button>
-          <Button active>
-            <Text>4</Text>
-          </Button>
-          <Button>
-            <Text>5</Text>
+          <Button
+            active={this.props.navigation.state.routeName === 'SettingsScreenLisbt'}
+            onPress={() => this.props.navigation.navigate('SettingsScreenList')}>
+            <Text>設定</Text>
           </Button>
         </FooterTab>
         <Modal
@@ -44,7 +41,7 @@ export default class BottomTabbar extends React.Component {
                 <Button
                   onPress={() => {
                     this.props.navigation.navigate('CalendarSelectScreen', {
-                      reflesh: this.props.reflesh(),
+                      refresh: this.props.refresh(),
                     });
                     this._toggleModal()
                   }}>

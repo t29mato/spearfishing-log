@@ -18,7 +18,7 @@ export default class CalendarSelectScreen extends React.Component {
           onDayPress={date => {
             this.props.navigation.navigate('ReportCreateScreen', {
               date: date.dateString,
-              reflesh: this.props.reflesh,
+              refresh: this.props.navigation.state.params.refresh,
             });
           }}
         />

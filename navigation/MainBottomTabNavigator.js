@@ -1,15 +1,16 @@
 // @flow
 
-import { createSwitchNavigator } from 'react-navigation';
+import { createBottomTabNavigator } from 'react-navigation';
 import ReportListScreen from '../screens/ReportListScreen';
-import CatchListScreen from '../screens/CatchListScreen';
+import SettingsScreen from '../screens/SettingsScreen';
 
-const MainBottomTabNavigator = createSwitchNavigator(
+const MainBottomTabNavigator = createBottomTabNavigator(
   {
     ReportListScreen,
-    CatchListScreen,
+    SettingsScreen,
   },
   {
+    initialRouteName: 'ReportListScreen',
     navigationOptions: {
       header: null,
     },

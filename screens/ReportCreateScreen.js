@@ -87,8 +87,8 @@ export default class ReportCreateScreen extends React.Component {
                   this.state.exitTime,
                   this.state.diary
                 );
-                this.props.navigation.state.params.reflesh;
                 this.props.navigation.navigate('ReportListScreen');
+                this.props.navigation.state.params.refresh();
               }}>
               <Text>保存</Text>
             </Button>
