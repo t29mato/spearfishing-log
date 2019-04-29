@@ -3,6 +3,8 @@
 import { createAppContainer, createStackNavigator } from 'react-navigation';
 import ReportCreateScreen from '../screens/report/ReportCreateScreen';
 import ReportDetailScreen from '../screens/report/ReportDetailScreen';
+import PointCreateScreen from '../screens/point/PointCreateScreen';
+import PointDetailScreen from '../screens/point/PointDetailScreen';
 import CalendarSelectScreen from '../screens/report/CalendarSelectScreen';
 import MainBottomTabNavigator from './MainBottomTabNavigator';
 
@@ -13,9 +15,11 @@ export default createAppContainer(
       ReportCreateScreen,
       CalendarSelectScreen,
       ReportDetailScreen,
+      PointCreateScreen,
+      PointDetailScreen,
     },
     {
-      initialRouteName: 'MainBottomTabNavigator',
+      initialRouteName: 'PointCreateScreen',
       mode: 'modal',
     }
   )

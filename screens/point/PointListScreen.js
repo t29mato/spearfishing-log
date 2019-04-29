@@ -49,7 +49,7 @@ export default class PointListScreen extends React.Component {
             <Button
               transparent
               onPress={() => {
-                this.props.navigation.navigate('CalendarSelectScreen', {
+                this.props.navigation.navigate('PointCreateScreen', {
                   refresh: this.componentWillMount.bind(this),
                 });
               }}>
