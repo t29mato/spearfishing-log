@@ -33,7 +33,7 @@ export default createAppContainer(
       FishTypeSelectScreen,
     },
     {
-      initialRouteName: 'FishTypeSelectScreen',
+      initialRouteName: 'CatchCreateScreen',
     }
   )
 );

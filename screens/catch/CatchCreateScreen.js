@@ -21,7 +21,6 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import { Alert, FlatList } from 'react-native';
 import fishTypes from '../../data/master/fishTypes';
 const db = SQLite.openDatabase('db');
-import { CatchType } from '../../constans/Type';
 
 type Props = {
   navigation: Object,
@@ -29,8 +28,23 @@ type Props = {
 type State = {
   isVisibleDatePicker: boolean,
   isVisibleTimePicker: boolean,
-  catch: CatchType,
-}
+  catch: {
+    id: number,
+    date: Date,
+    time: Date,
+    fishTypeId: number,
+    fishSize: number,
+    fishWeight: string,
+    pointId: string,
+    weather: string,
+    temperature: string,
+    wind: string,
+    waterTemperature: string,
+    waterDepth: string,
+    clarity: string,
+    memo: string,
+  },
+};
 
 export default class CatchCreateScreen extends React.Component<Props, State> {
   static navigationOptions = {
@@ -44,7 +58,7 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
       date: new Date(),
       time: new Date(),
       fishTypeId: 0,
-      fishSize: '',
+      fishSize: 0,
       fishWeight: '',
       pointId: '',
       weather: '',
@@ -71,15 +85,9 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
     this.setState({ catch: Object.assign(this.state.catch, { time }) });
     this._toggleModalTimePicker();
   };
-  _onValueChange(fishTypeId: number) {
-    this.setState({ catch: Object.assign(this.state.catch, { fishTypeId })});
+  returnFishTypeId(fishTypeId: number) {
+    this.setState({ catch: Object.assign(this.state.catch, { fishTypeId }) });
   }
-
-  // returnName(memo: string) {
-  //   this.setState({
-  //     point: Object.assign(this.state.catch, { memo }),
-  //   });
-  // }
 
   render() {
     const _createPoint = (name, memo) => {
@@ -137,8 +145,8 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
         </Header>
         <Content>
           <Text>{JSON.stringify(this.state)}</Text>
-          <ListItem icon onPress={() => this._toggleModalDatePicker()}>
-            <Left style={{ width: 100 }}>
+          <ListItem onPress={() => this._toggleModalDatePicker()}>
+            <Left style={{ width: 80 }}>
               <Text>突行日</Text>
             </Left>
             <Body>
@@ -168,8 +176,8 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
               <Icon active name={'arrow-down'} />
             </Right>
           </ListItem>
-          <ListItem icon onPress={() => this._toggleModalTimePicker()}>
-            <Left style={{ width: 100 }}>
+          <ListItem onPress={() => this._toggleModalTimePicker()}>
+            <Left style={{ width: 80 }}>
               <Text>突果時間</Text>
             </Left>
             <Body>
@@ -200,13 +208,23 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
           <Separator bordered>
             <Text>魚の情報</Text>
           </Separator>
-          <ListItem icon onPress={() => this.props.navigation.navigate('FishTypeSelectScreen', {
-            catch: this.state.catch
-          })}>
-            <Left style={{ width: 100 }}>
+          <ListItem
+            onPress={() =>
+              this.props.navigation.navigate('FishTypeSelectScreen', {
+                catch: this.state.catch,
+                returnFishTypeId: this.returnFishTypeId.bind(this),
+              })
+            }>
+            <Left style={{ width: 80 }}>
               <Text>魚種</Text>
             </Left>
             <Body>
+              {/* 魚種マスターのIDは1から */}
+              {this.state.catch.fishTypeId > 0 ? (
+                <Text>{fishTypes[this.state.catch.fishTypeId].katakana}</Text>
+              ) : (
+                <Text style={{ color: 'grey' }}>魚種不明</Text>
+              )}
             </Body>
             <Right>
               <Icon active name={'arrow-forward'} />

@@ -13,4 +13,4 @@ export type CatchType = {
   waterDepth: string,
   clarity: string,
   memo: string,
-}
+};
