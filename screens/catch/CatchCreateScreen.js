@@ -34,7 +34,7 @@ type State = {
     time: Date,
     fishTypeId: number,
     fishSize: number,
-    fishWeight: string,
+    fishWeight: number,
     pointId: string,
     weather: string,
     temperature: string,
@@ -59,7 +59,7 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
       time: new Date(),
       fishTypeId: 0,
       fishSize: 0,
-      fishWeight: '',
+      fishWeight: 0.0,
       pointId: '',
       weather: '',
       temperature: '',
@@ -90,6 +90,9 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
   }
   returnFishSize(fishSize: number) {
     this.setState({ catch: Object.assign(this.state.catch, { fishSize }) });
+  }
+  returnFishWeight(fishWeight: number) {
+    this.setState({ catch: Object.assign(this.state.catch, { fishWeight }) });
   }
 
   render() {
@@ -246,6 +249,27 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
             <Body>
               {this.state.catch.fishSize ? (
                 <Text>{this.state.catch.fishSize + 'cm'}</Text>
+              ) : (
+                <Text style={{ color: 'grey' }}>未入力</Text>
+              )}
+            </Body>
+            <Right>
+              <Icon active name={'arrow-forward'} />
+            </Right>
+          </ListItem>
+          <ListItem
+            onPress={() =>
+              this.props.navigation.navigate('FishWeightInputScreen', {
+                catch: this.state.catch,
+                returnFishWeight: this.returnFishWeight.bind(this),
+              })
+            }>
+            <Left style={{ width: 80 }}>
+              <Text>重さ</Text>
+            </Left>
+            <Body>
+              {this.state.catch.fishWeight ? (
+                <Text>{this.state.catch.fishWeight + 'kg'}</Text>
               ) : (
                 <Text style={{ color: 'grey' }}>未入力</Text>
               )}

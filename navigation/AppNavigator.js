@@ -15,6 +15,7 @@ import CatchDetailScreen from '../screens/catch/CatchDetailScreen';
 import CatchEditScreen from '../screens/catch/CatchEditScreen';
 import FishTypeSelectScreen from '../screens/catch/FishTypeSelectScreen';
 import FishSizeInputScreen from '../screens/catch/FishSizeInputScreen';
+import FishWeightInputScreen from '../screens/catch/FishWeightInputScreen';
 
 export default createAppContainer(
   createStackNavigator(
@@ -33,6 +34,7 @@ export default createAppContainer(
       CatchEditScreen,
       FishTypeSelectScreen,
       FishSizeInputScreen,
+      FishWeightInputScreen,
     },
     {
       initialRouteName: 'CatchCreateScreen',

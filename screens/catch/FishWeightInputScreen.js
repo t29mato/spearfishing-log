@@ -17,29 +17,45 @@ import {
   Col,
 } from 'native-base';
 import { StyleSheet } from 'react-native';
-import fishTypes from '../../data/master/fishTypes';
 
 type Props = {
   navigation: Object,
 };
 type State = {
-  fishSize: number,
+  fishWeight: string,
 };
 
-export default class FishSizeInputScreen extends React.Component<Props, State> {
+export default class FishWeightInputScreen extends React.Component<Props, State> {
   static navigationOptions = {
     header: null,
   };
   state = {
-    fishSize: this.props.navigation.getParam('catch').fishSize,
+    fishWeight:
+      this.props.navigation.getParam('catch').fishWeight === 0
+        ? ''
+        : this.props.navigation.getParam('catch').fishWeight.toString(),
   };
   _insertNumber(n: number) {
-    let maxNumber = 300;
-    let result = parseInt(this.state.fishSize.toString() + n.toString(), 10);
-    if (result > maxNumber) {
+    // 0kg is NP, but 00kg is NG.
+    if (this.state.fishWeight === '0' && n === 0) {
       return null;
     }
-    this.setState({ fishSize: result });
+    // 0.0kg is NP, but 0.00kg is NG.
+    if (this.state.fishWeight.slice(-2).indexOf('.') === 0) {
+      return null;
+    }
+    let maxNumber = 99;
+    let result = this.state.fishWeight + n.toString();
+    if (parseInt(result, 10) > maxNumber) {
+      return null;
+    }
+    this.setState({ fishWeight: result });
+  }
+  _insertDecimal() {
+    if (this.state.fishWeight.indexOf('.') > -1) {
+      return null;
+    }
+    this.setState({ fishWeight: this.state.fishWeight + '.' });
   }
 
   render() {
@@ -50,26 +66,28 @@ export default class FishSizeInputScreen extends React.Component<Props, State> {
             <Button
               transparent
               onPress={() => {
-                this.props.navigation.state.params.returnFishSize(this.state.fishSize);
+                this.props.navigation.state.params.returnFishWeight(
+                  parseFloat(this.state.fishWeight)
+                );
                 this.props.navigation.pop();
               }}>
               <Icon name="arrow-back" />
             </Button>
           </Left>
           <Body>
-            <Title>サイズを入力</Title>
+            <Title>重さを入力</Title>
           </Body>
           <Right>
-            <Button transparent onPress={() => this.setState({ fishSize: 0 })}>
+            <Button transparent onPress={() => this.setState({ fishWeight: '' })}>
               <Text>クリア</Text>
             </Button>
           </Right>
         </Header>
         <Content>
-          <ListItem last>
+          <ListItem noBorder>
             <Left />
             <Body>
-              <Text style={styles.fishSize}>{this.state.fishSize + 'cm'}</Text>
+              <Text style={styles.fishWeight}>{this.state.fishWeight + 'kg'}</Text>
             </Body>
           </ListItem>
           <Grid>
@@ -106,13 +124,17 @@ export default class FishSizeInputScreen extends React.Component<Props, State> {
             </Col>
           </Grid>
           <Grid>
+            <Col style={styles.col} onPress={() => this._insertDecimal()}>
+              <Text style={styles.number}>.</Text>
+            </Col>
             <Col style={styles.col} onPress={() => this._insertNumber(0)}>
               <Text style={styles.number}>0</Text>
             </Col>
+            <Col style={styles.col} />
           </Grid>
           <ListItem noBorder>
             <Body>
-              <Text>入力範囲：0cm 〜 300cm</Text>
+              <Text>入力範囲：0.1kg 〜 99.9kg</Text>
             </Body>
           </ListItem>
         </Content>
@@ -122,7 +144,7 @@ export default class FishSizeInputScreen extends React.Component<Props, State> {
 }
 
 const styles = StyleSheet.create({
-  fishSize: {
+  fishWeight: {
     fontSize: 40,
   },
   col: {
