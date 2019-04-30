@@ -1,10 +1,10 @@
 {
-  "devToolsPort": 19002,
+  "devToolsPort": 19003,
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 2259,
+  "packagerPid": 16372,
   "expoServerNgrokUrl": "https://zw-34m.t2kmato.spearfishing-log.exp.direct",
   "packagerNgrokUrl": "https://packager.zw-34m.t2kmato.spearfishing-log.exp.direct",
-  "ngrokPid": 2304,
+  "ngrokPid": 16415,
   "webpackServerPort": null
 }

@@ -37,7 +37,7 @@ export default createAppContainer(
       FishWeightInputScreen,
     },
     {
-      initialRouteName: 'CatchCreateScreen',
+      initialRouteName: 'MainBottomTabNavigator',
     }
   )
 );
