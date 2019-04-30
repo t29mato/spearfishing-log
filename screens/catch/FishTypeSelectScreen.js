@@ -26,7 +26,55 @@ type Props = {
 type State = {
   keyword: string,
   fishTypes: Object,
+  fishDictionary: Object,
+  fishTypeId: integer,
 };
+
+function _createFishDictionary() {
+  let dictionary = [];
+  for (let i = 0; i < fishTypes.length; i++) {
+    let fish = fishTypes[i];
+    let found = false;
+    dictionary.forEach(d => {
+      if (d.index === fish.katakana[0]) {
+        found = true;
+        d.fishes.push(fish);
+      }
+    });
+    if (!found) {
+      dictionary.push({ index: fish.katakana[0], fishes: [fish] });
+    }
+  }
+  return dictionary;
+}
+
+function _convertToKatakana(text) {
+  return text.replace(/[\u3041-\u3096]/g, function(match) {
+    var chr = match.charCodeAt(0) + 0x60;
+    return String.fromCharCode(chr);
+  });
+}
+
+function _indexFilteredFish(dictionary, index) {
+  for (let i = 0; i < dictionary.length; i++) {
+    if (dictionary[i].index === index) {
+      return dictionary[i];
+    }
+  }
+  return [];
+}
+
+function _filterFish(dictionary, text) {
+  let fishTypesFiltered = [];
+  const kana = _convertToKatakana(text);
+  const filteredFish = _indexFilteredFish(dictionary, kana[0]);
+  filteredFish.fishes.forEach(fish => {
+    if (fish.katakana.indexOf(kana) > -1) {
+      fishTypesFiltered.push(fish);
+    }
+  });
+  return fishTypesFiltered;
+}
 
 export default class FishTypeSelectScreen extends React.Component<Props, State> {
   static navigationOptions = {
@@ -35,10 +83,11 @@ export default class FishTypeSelectScreen extends React.Component<Props, State> 
   state = {
     keyword: '',
     fishTypes,
+    fishDictionary: _createFishDictionary(),
+    fishTypeId: this.props.navigation.getParam('catch').fishTypeId,
   };
 
   render() {
-    let fishTypeId = this.props.navigation.getParam('catch').fishTypeId;
     return (
       <Container>
         <Header>
@@ -46,7 +95,7 @@ export default class FishTypeSelectScreen extends React.Component<Props, State> 
             <Button
               transparent
               onPress={() => {
-                this.props.navigation.state.params.returnFishTypeId(fishTypeId);
+                this.props.navigation.state.params.returnFishTypeId(this.state.fishTypeId);
                 this.props.navigation.pop();
               }}>
               <Icon name="arrow-back" />
@@ -56,7 +105,7 @@ export default class FishTypeSelectScreen extends React.Component<Props, State> 
             <Title>魚の種類を選択</Title>
           </Body>
           <Right>
-            <Button transparent onPress={() => (fishTypeId = 0)}>
+            <Button transparent onPress={() => (this.state.fishTypeId = 0)}>
               <Text>クリア</Text>
             </Button>
           </Right>
@@ -67,13 +116,15 @@ export default class FishTypeSelectScreen extends React.Component<Props, State> 
               <Input
                 placeholder={'キーワードを入力すると絞り込めます'}
                 onChangeText={text => {
-                  let fishTypesFiltered = [];
-                  fishTypes.forEach(type => {
-                    if (type.hiragana.indexOf(text) > -1 || type.katakana.indexOf(text) > -1) {
-                      fishTypesFiltered.push(type);
-                    }
-                  });
-                  this.setState({ fishTypes: fishTypesFiltered });
+                  if (!text) {
+                    this.setState({ fishTypes });
+                    return;
+                  }
+                  if (text.match(/[^ぁ-んァ-ヶー\s]/)) {
+                    this.setState({ fishTypes: [] });
+                    return;
+                  }
+                  this.setState({ fishTypes: _filterFish(this.state.fishDictionary, text) });
                 }}
               />
             </Item>
@@ -89,14 +140,16 @@ export default class FishTypeSelectScreen extends React.Component<Props, State> 
           </CardItem>
           <FlatList
             data={this.state.fishTypes}
+            extraData={this.state}
             renderItem={({ item }) => (
               <ListItem
-                selected={item.id === fishTypeId}
+                selected={item.id === this.state.fishTypeId}
                 onPress={() => {
-                  fishTypeId = item.id;
+                  this.state.fishTypeId = item.id;
+                  console.log(this.state.fishTypeId);
                 }}>
                 <Left>
-                  <Text>{item.katakana}</Text>
+                  <Text>{item.katakana + ' itemId => ' + item.id + '| fishTypeId => ' + this.state.fishTypeId}</Text>
                 </Left>
                 <Right>
                   <Text>●</Text>
