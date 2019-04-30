@@ -47,6 +47,15 @@ type State = {
   },
 };
 
+function _getFishNameById(id) {
+  for (let i = 0; i < fishTypes.length; i++) {
+    if (fishTypes[i].id === id) {
+      return fishTypes[i].katakana;
+    }
+  }
+  return '';
+}
+
 export default class CatchCreateScreen extends React.Component<Props, State> {
   static navigationOptions = {
     header: null,
@@ -232,7 +241,7 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
             <Body>
               {/* 魚種マスターのIDは1から */}
               {this.state.catch.fishTypeId > 0 ? (
-                <Text>{fishTypes[this.state.catch.fishTypeId].katakana}</Text>
+                <Text>{_getFishNameById(this.state.catch.fishTypeId)}</Text>
               ) : (
                 <Text style={{ color: 'grey' }}>魚種不明</Text>
               )}
