@@ -27,7 +27,7 @@ type State = {
   keyword: string,
   fishTypes: Object,
   fishDictionary: Object,
-  fishTypeId: integer,
+  fishTypeId: ?number,
 };
 
 function _createFishDictionary() {
@@ -105,7 +105,7 @@ export default class FishTypeSelectScreen extends React.Component<Props, State> 
             <Title>魚の種類を選択</Title>
           </Body>
           <Right>
-            <Button transparent onPress={() => (this.state.fishTypeId = 0)}>
+            <Button transparent onPress={() => this.setState({ fishTypeId: null })}>
               <Text>クリア</Text>
             </Button>
           </Right>
@@ -140,16 +140,15 @@ export default class FishTypeSelectScreen extends React.Component<Props, State> 
           </CardItem>
           <FlatList
             data={this.state.fishTypes}
-            extraData={this.state}
+            extraData={this.state.fishTypeId}
             renderItem={({ item }) => (
               <ListItem
                 selected={item.id === this.state.fishTypeId}
                 onPress={() => {
-                  this.state.fishTypeId = item.id;
-                  console.log(this.state.fishTypeId);
+                  this.setState({ fishTypeId: item.id });
                 }}>
                 <Left>
-                  <Text>{item.katakana + ' itemId => ' + item.id + '| fishTypeId => ' + this.state.fishTypeId}</Text>
+                  <Text>{item.katakana}</Text>
                 </Left>
                 <Right>
                   <Text>●</Text>
