@@ -19,6 +19,7 @@ import CatchEditScreen from '../screens/catch/CatchEditScreen';
 import FishTypeSelectScreen from '../screens/catch/FishTypeSelectScreen';
 import FishSizeInputScreen from '../screens/catch/FishSizeInputScreen';
 import FishWeightInputScreen from '../screens/catch/FishWeightInputScreen';
+import WeatherSelectScreen from '../screens/catch/WeatherSelectScreen';
 
 export default createAppContainer(
   createStackNavigator(
@@ -39,6 +40,7 @@ export default createAppContainer(
       FishTypeSelectScreen,
       FishSizeInputScreen,
       FishWeightInputScreen,
+      WeatherSelectScreen,
     },
     {
       initialRouteName: 'MainBottomTabNavigator',

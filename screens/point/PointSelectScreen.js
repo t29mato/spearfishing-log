@@ -13,44 +13,38 @@ import {
   Icon,
   ListItem,
   Text,
-  Grid,
-  Col,
 } from 'native-base';
-import { StyleSheet, FlatList } from 'react-native';
-import { SQLite } from 'expo';
+import { getPoints } from '../../models/PointModel';
+import type { Points } from '../../models/PointModel';
 
-const db = SQLite.openDatabase('db');
+// const db = SQLite.openDatabase('db');
 
 type Props = {
   navigation: Object,
 };
 type State = {
-  points: Object,
-  pointId: string,
-  pointName: string,
+  points: ?Points,
+  pointId: ?number,
+  pointName: ?string,
 };
 
 export default class PointSelectScreen extends React.Component<Props, State> {
   static navigationOptions = {
     header: null,
   };
-  state = {
+  state: State = {
     points: null,
     pointId: this.props.navigation.getParam('pointId'),
-    pointName: '',
+    pointName: null,
   };
   componentWillMount() {
-    db.transaction(tx => {
-      // tx.executeSql('drop table if exists points;', null, alert('success'), (_, msg) => alert('failed' + JSON.stringify(msg)));
-      tx.executeSql(
-        'create table if not exists points (id integer primary key not null, name text, memo text);'
-      ),
-        null,
-        tx.executeSql('select * from points', null, (_, { rows: { _array } }) => {
-          this.setState({ points: _array });
-        }),
-        (_, error) => console.log(error);
-    });
+    getPoints()
+      .then(points => {
+        this.setState({ points });
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   render() {
@@ -93,11 +87,12 @@ export default class PointSelectScreen extends React.Component<Props, State> {
             <Title>ポイントを選択</Title>
           </Body>
           <Right>
-            <Button onPress={() => this.setState({ pointId: '' })} transparent>
+            <Button onPress={() => this.setState({ pointId: null })} transparent>
               <Text>クリア</Text>
             </Button>
           </Right>
         </Header>
+        <Text>{JSON.stringify(this.state)}</Text>
         <Content>{PointList}</Content>
       </Container>
     );

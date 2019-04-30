@@ -15,11 +15,12 @@ import {
   Right,
   Button,
   Separator,
-  Picker,
 } from 'native-base';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { Alert, FlatList } from 'react-native';
 import fishTypes from '../../data/master/fishTypes';
+import { getPoint } from '../../models/PointModel';
+import { getWeatherName } from '../../models/WeatherModel';
 const db = SQLite.openDatabase('db');
 
 type Props = {
@@ -35,9 +36,8 @@ type State = {
     fishTypeId: number,
     fishSize: number,
     fishWeight: number,
-    pointId: string,
-    pointName: string,
-    weather: string,
+    pointId: ?number,
+    weatherId: ?number,
     temperature: string,
     wind: string,
     waterTemperature: string,
@@ -45,6 +45,7 @@ type State = {
     clarity: string,
     memo: string,
   },
+  pointName: ?string,
 };
 
 function _getFishNameById(id) {
@@ -60,7 +61,7 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
   static navigationOptions = {
     header: null,
   };
-  state = {
+  state: State = {
     isVisibleDatePicker: false,
     isVisibleTimePicker: false,
     catch: {
@@ -70,9 +71,8 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
       fishTypeId: 0,
       fishSize: 0,
       fishWeight: 0.0,
-      pointId: '',
-      pointName: '',
-      weather: '',
+      pointId: null,
+      weatherId: null,
       temperature: '',
       wind: '',
       waterTemperature: '',
@@ -80,6 +80,7 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
       clarity: '',
       memo: '',
     },
+    pointName: null,
   };
 
   _toggleModalDatePicker = (): void => {
@@ -88,7 +89,7 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
   _toggleModalTimePicker = (): void => {
     this.setState({ isVisibleTimePicker: !this.state.isVisibleTimePicker });
   };
-  _handleDatePicked = (date: Date): voide => {
+  _handleDatePicked = (date: Date): void => {
     this.setState({ catch: Object.assign(this.state.catch, { date }) });
     this._toggleModalDatePicker();
   };
@@ -105,8 +106,27 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
   returnFishWeight(fishWeight: number): void {
     this.setState({ catch: Object.assign(this.state.catch, { fishWeight }) });
   }
-  returnPoint(pointId: string, pointName: string): void {
-    this.setState({ catch: Object.assign(this.state.catch, { pointId, pointName }) });
+  returnPoint(pointId: number, pointName: string): void {
+    this.setState({ catch: Object.assign(this.state.catch, { pointId }) });
+    this.setState({ pointName });
+  }
+  returnWeatherId(weatherId: number): void {
+    this.setState({ catch: Object.assign(this.state.catch, { weatherId }) });
+  }
+
+  constructor() {
+    super();
+    // FIXME: below code needs in only CatchEditScreen.js.
+    if (this.state.catch.pointId) {
+      getPoint(this.state.catch.pointId)
+        .then(point => {
+          console.log(point);
+          this.setState({ pointName: point.name });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
   }
 
   render() {
@@ -306,8 +326,8 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
               <Text>ポイント</Text>
             </Left>
             <Body>
-              {this.state.catch.pointName ? (
-                <Text>{this.state.catch.pointName}</Text>
+              {this.state.pointName ? (
+                <Text>{this.state.pointName}</Text>
               ) : (
                 <Text style={{ color: 'grey' }}>未選択</Text>
               )}
@@ -316,7 +336,27 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
               <Icon active name={'arrow-forward'} />
             </Right>
           </ListItem>
-
+          <ListItem
+            onPress={() =>
+              this.props.navigation.navigate('WeatherSelectScreen', {
+                weatherId: this.state.catch.weatherId,
+                returnWeatherId: this.returnWeatherId.bind(this),
+              })
+            }>
+            <Left style={{ width: 80 }}>
+              <Text>天気</Text>
+            </Left>
+            <Body>
+              {this.state.catch.weatherId ? (
+                <Text>{getWeatherName(this.state.catch.weatherId)}</Text>
+              ) : (
+                <Text style={{ color: 'grey' }}>未選択</Text>
+              )}
+            </Body>
+            <Right>
+              <Icon active name={'arrow-forward'} />
+            </Right>
+          </ListItem>
         </Content>
       </Container>
     );
