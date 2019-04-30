@@ -43,7 +43,7 @@ export default createAppContainer(
       WeatherSelectScreen,
     },
     {
-      initialRouteName: 'MainBottomTabNavigator',
+      initialRouteName: 'CatchCreateScreen',
     }
   )
 );
