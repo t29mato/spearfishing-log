@@ -3,11 +3,14 @@
 import { createAppContainer, createStackNavigator } from 'react-navigation';
 import ReportCreateScreen from '../screens/report/ReportCreateScreen';
 import ReportDetailScreen from '../screens/report/ReportDetailScreen';
+
 import PointCreateScreen from '../screens/point/PointCreateScreen';
 import PointDetailScreen from '../screens/point/PointDetailScreen';
 import PointNameEditScreen from '../screens/point/PointNameEditScreen';
 import PointMemoEditScreen from '../screens/point/PointMemoEditScreen';
 import PointEditScreen from '../screens/point/PointEditScreen';
+import PointSelectScreen from '../screens/point/PointSelectScreen';
+
 import CalendarSelectScreen from '../screens/report/CalendarSelectScreen';
 import MainBottomTabNavigator from './MainBottomTabNavigator';
 import CatchCreateScreen from '../screens/catch/CatchCreateScreen';
@@ -29,6 +32,7 @@ export default createAppContainer(
       PointNameEditScreen,
       PointMemoEditScreen,
       PointEditScreen,
+      PointSelectScreen,
       CatchCreateScreen,
       CatchDetailScreen,
       CatchEditScreen,

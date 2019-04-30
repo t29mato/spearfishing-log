@@ -36,6 +36,7 @@ type State = {
     fishSize: number,
     fishWeight: number,
     pointId: string,
+    pointName: string,
     weather: string,
     temperature: string,
     wind: string,
@@ -61,6 +62,7 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
       fishSize: 0,
       fishWeight: 0.0,
       pointId: '',
+      pointName: '',
       weather: '',
       temperature: '',
       wind: '',
@@ -71,28 +73,31 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
     },
   };
 
-  _toggleModalDatePicker = () => {
+  _toggleModalDatePicker = (): void => {
     this.setState({ isVisibleDatePicker: !this.state.isVisibleDatePicker });
   };
-  _toggleModalTimePicker = () => {
+  _toggleModalTimePicker = (): void => {
     this.setState({ isVisibleTimePicker: !this.state.isVisibleTimePicker });
   };
-  _handleDatePicked = (date: Date) => {
+  _handleDatePicked = (date: Date): voide => {
     this.setState({ catch: Object.assign(this.state.catch, { date }) });
     this._toggleModalDatePicker();
   };
-  _handleTimePicked = (time: Date) => {
+  _handleTimePicked = (time: Date): void => {
     this.setState({ catch: Object.assign(this.state.catch, { time }) });
     this._toggleModalTimePicker();
   };
-  returnFishTypeId(fishTypeId: number) {
+  returnFishTypeId(fishTypeId: number): void {
     this.setState({ catch: Object.assign(this.state.catch, { fishTypeId }) });
   }
-  returnFishSize(fishSize: number) {
+  returnFishSize(fishSize: number): void {
     this.setState({ catch: Object.assign(this.state.catch, { fishSize }) });
   }
-  returnFishWeight(fishWeight: number) {
+  returnFishWeight(fishWeight: number): void {
     this.setState({ catch: Object.assign(this.state.catch, { fishWeight }) });
+  }
+  returnPoint(pointId: string, pointName: string): void {
+    this.setState({ catch: Object.assign(this.state.catch, { pointId, pointName }) });
   }
 
   render() {
@@ -272,6 +277,30 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
                 <Text>{this.state.catch.fishWeight + 'kg'}</Text>
               ) : (
                 <Text style={{ color: 'grey' }}>未入力</Text>
+              )}
+            </Body>
+            <Right>
+              <Icon active name={'arrow-forward'} />
+            </Right>
+          </ListItem>
+          <Separator bordered>
+            <Text>ポイント</Text>
+          </Separator>
+          <ListItem
+            onPress={() =>
+              this.props.navigation.navigate('PointSelectScreen', {
+                pointId: this.state.catch.pointId,
+                returnPoint: this.returnPoint.bind(this),
+              })
+            }>
+            <Left style={{ width: 80 }}>
+              <Text>ポイント</Text>
+            </Left>
+            <Body>
+              {this.state.catch.pointName ? (
+                <Text>{this.state.catch.pointName}</Text>
+              ) : (
+                <Text style={{ color: 'grey' }}>未選択</Text>
               )}
             </Body>
             <Right>
