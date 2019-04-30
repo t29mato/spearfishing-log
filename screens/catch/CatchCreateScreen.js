@@ -17,10 +17,11 @@ import {
   Separator,
 } from 'native-base';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import { Alert, FlatList } from 'react-native';
+import { Alert } from 'react-native';
 import fishTypes from '../../data/master/fishTypes';
 import { getPoint } from '../../models/PointModel';
 import { getWeatherName } from '../../models/WeatherModel';
+import { getWindName } from '../../models/WindModel';
 const db = SQLite.openDatabase('db');
 
 type Props = {
@@ -39,7 +40,7 @@ type State = {
     pointId: ?number,
     weatherId: ?number,
     temperature: string,
-    wind: string,
+    windId: ?number,
     waterTemperature: string,
     waterDepth: string,
     clarity: string,
@@ -74,7 +75,7 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
       pointId: null,
       weatherId: null,
       temperature: '',
-      wind: '',
+      windId: null,
       waterTemperature: '',
       waterDepth: '',
       clarity: '',
@@ -112,6 +113,9 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
   }
   returnWeatherId(weatherId: number): void {
     this.setState({ catch: Object.assign(this.state.catch, { weatherId }) });
+  }
+  returnWindId(windId: number): void {
+    this.setState({ catch: Object.assign(this.state.catch, { windId }) });
   }
 
   constructor() {
@@ -349,6 +353,27 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
             <Body>
               {this.state.catch.weatherId ? (
                 <Text>{getWeatherName(this.state.catch.weatherId)}</Text>
+              ) : (
+                <Text style={{ color: 'grey' }}>未選択</Text>
+              )}
+            </Body>
+            <Right>
+              <Icon active name={'arrow-forward'} />
+            </Right>
+          </ListItem>
+          <ListItem
+            onPress={() =>
+              this.props.navigation.navigate('WindSelectScreen', {
+                windId: this.state.catch.windId,
+                returnWindId: this.returnWindId.bind(this),
+              })
+            }>
+            <Left style={{ width: 80 }}>
+              <Text>風</Text>
+            </Left>
+            <Body>
+              {this.state.catch.windId ? (
+                <Text>{getWindName(this.state.catch.windId)}</Text>
               ) : (
                 <Text style={{ color: 'grey' }}>未選択</Text>
               )}
