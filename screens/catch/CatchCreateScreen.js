@@ -15,11 +15,11 @@ import {
   Right,
   Button,
   Separator,
-  Picker,
 } from 'native-base';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { Alert, FlatList } from 'react-native';
 import fishTypes from '../../data/master/fishTypes';
+import { getWeatherName } from '../../models/WeatherModel';
 const db = SQLite.openDatabase('db');
 
 type Props = {
@@ -37,7 +37,7 @@ type State = {
     fishWeight: number,
     pointId: string,
     pointName: string,
-    weather: string,
+    weatherId: ?number,
     temperature: string,
     wind: string,
     waterTemperature: string,
@@ -60,7 +60,7 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
   static navigationOptions = {
     header: null,
   };
-  state = {
+  state: State = {
     isVisibleDatePicker: false,
     isVisibleTimePicker: false,
     catch: {
@@ -72,7 +72,7 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
       fishWeight: 0.0,
       pointId: '',
       pointName: '',
-      weather: '',
+      weatherId: null,
       temperature: '',
       wind: '',
       waterTemperature: '',
@@ -88,7 +88,7 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
   _toggleModalTimePicker = (): void => {
     this.setState({ isVisibleTimePicker: !this.state.isVisibleTimePicker });
   };
-  _handleDatePicked = (date: Date): voide => {
+  _handleDatePicked = (date: Date): void => {
     this.setState({ catch: Object.assign(this.state.catch, { date }) });
     this._toggleModalDatePicker();
   };
@@ -107,6 +107,9 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
   }
   returnPoint(pointId: string, pointName: string): void {
     this.setState({ catch: Object.assign(this.state.catch, { pointId, pointName }) });
+  }
+  returnWeatherId(weatherId: number): void {
+    this.setState({ catch: Object.assign(this.state.catch, { weatherId }) });
   }
 
   render() {
@@ -308,6 +311,27 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
             <Body>
               {this.state.catch.pointName ? (
                 <Text>{this.state.catch.pointName}</Text>
+              ) : (
+                <Text style={{ color: 'grey' }}>未選択</Text>
+              )}
+            </Body>
+            <Right>
+              <Icon active name={'arrow-forward'} />
+            </Right>
+          </ListItem>
+          <ListItem
+            onPress={() =>
+              this.props.navigation.navigate('WeatherSelectScreen', {
+                weatherId: this.state.catch.weatherId,
+                returnWeatherId: this.returnWeatherId.bind(this),
+              })
+            }>
+            <Left style={{ width: 80 }}>
+              <Text>天気</Text>
+            </Left>
+            <Body>
+              {this.state.catch.weatherId ? (
+                <Text>{getWeatherName(this.state.catch.weatherId)}</Text>
               ) : (
                 <Text style={{ color: 'grey' }}>未選択</Text>
               )}
