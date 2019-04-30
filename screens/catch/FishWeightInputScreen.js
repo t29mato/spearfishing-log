@@ -130,7 +130,16 @@ export default class FishWeightInputScreen extends React.Component<Props, State>
             <Col style={styles.col} onPress={() => this._insertNumber(0)}>
               <Text style={styles.number}>0</Text>
             </Col>
-            <Col style={styles.col} />
+            <Col
+              style={styles.col}
+              onPress={() => {
+                this.props.navigation.state.params.returnFishWeight(
+                  parseFloat(this.state.fishWeight)
+                );
+                this.props.navigation.pop();
+              }}>
+              <Text style={styles.number}>決定</Text>
+            </Col>
           </Grid>
           <ListItem noBorder>
             <Body>
@@ -152,13 +161,12 @@ const styles = StyleSheet.create({
     height: 100,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 5,
-    marginBottom: 5,
-    marginRight: 5,
-    marginLeft: 5,
+    marginTop: 2,
+    marginBottom: 2,
+    marginRight: 2,
+    marginLeft: 2,
   },
   number: {
     fontSize: 30,
-    fontWeight: '500',
   },
 });

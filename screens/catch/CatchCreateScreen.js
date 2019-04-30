@@ -279,7 +279,6 @@ export default class CatchCreateScreen extends React.Component<Props, State> {
             </Right>
           </ListItem>
 
-
         </Content>
       </Container>
     );
