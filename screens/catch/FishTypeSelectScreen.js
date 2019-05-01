@@ -84,6 +84,10 @@ export default class FishTypeSelectScreen extends React.Component<Props, State> 
       extraData={this.state.fishTypeId}
       renderItem={this._fishItem}
       keyExtractor={item => item.id.toString()}
+      initialNumToRender={50}
+      onEndReached={this.handleLoadMore}
+      onEndReachedThreshold={50}
+      windowSize={100}
     />
   );
 
