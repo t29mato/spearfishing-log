@@ -11,7 +11,7 @@ export default class FishSearch {
    *  and is for quick search.
    */
   constructor() {
-    this.fish = fishTypes;
+    this.fish = this._createFishListWithHeader(fishTypes);
     this.dictionary = this._createFishDictionary();
   }
 
@@ -58,6 +58,35 @@ export default class FishSearch {
    ******************************/
 
   /**
+   * Create fish list with header.
+   * @param  {Array} fish [fish list]
+   * @return {Array}      [fish list with header]
+   */
+  _createFishListWithHeader(fish) {
+    let list = [];
+    let indexList = [];
+    for (let i = 0; i < fish.length; i++) {
+      let found = false;
+      let f = fish[i];
+      indexList.forEach(l => {
+        if (l === f.katakana[0]) {
+          found = true;
+        }
+      });
+      if (!found) {
+        indexList.push(f.katakana[0]);
+        // Notion: Creating unique id with (i * -1).
+        // It can be 0 if you don't care warning messages.
+        // Unique id must be provided for FlatList keyExtractor.
+        list.push({ id: i * -1, header: true, name: f.katakana[0] });
+      }
+      f.header = false;
+      list.push(f);
+    }
+    return list;
+  }
+
+  /**
    * Create fish dictionary.
    * Fish data is grouped by the first one string.
    * @return {Object} [indexed fish dictionary]
@@ -65,6 +94,9 @@ export default class FishSearch {
   _createFishDictionary() {
     let dictionary = [];
     for (let i = 0; i < this.fish.length; i++) {
+      if (this.fish[i].header) {
+        continue;
+      }
       let fish = this.fish[i];
       let found = false;
       dictionary.forEach(d => {

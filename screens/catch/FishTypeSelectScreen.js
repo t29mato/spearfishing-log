@@ -16,6 +16,7 @@ import {
   Item,
   Input,
   CardItem,
+  Separator,
 } from 'native-base';
 import { FlatList } from 'react-native';
 import FishSearch from './FishSearch';
@@ -62,20 +63,28 @@ export default class FishTypeSelectScreen extends React.Component<Props, State> 
    ******************************/
 
   _fishItem = ({ item }) => {
-    return (
-      <ListItem
-        selected={item.id === this.state.fishTypeId}
-        onPress={() => {
-          this.setState({ fishTypeId: item.id });
-        }}>
-        <Left>
-          <Text>{item.katakana}</Text>
-        </Left>
-        <Right>
-          <Icon name="md-checkmark-circle" />
-        </Right>
-      </ListItem>
-    );
+    if (item.header) {
+      return (
+        <Separator>
+          <Text>{item.name}</Text>
+        </Separator>
+      );
+    } else {
+      return (
+        <ListItem
+          selected={item.id === this.state.fishTypeId}
+          onPress={() => {
+            this.setState({ fishTypeId: item.id });
+          }}>
+          <Left>
+            <Text>{item.katakana}</Text>
+          </Left>
+          <Right>
+            <Icon name="md-checkmark-circle" />
+          </Right>
+        </ListItem>
+      );
+    }
   };
 
   _fishList = () => (
