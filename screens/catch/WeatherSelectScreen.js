@@ -45,7 +45,7 @@ export default class WeatherSelectScreen extends React.Component<Props, State> {
             <Text>{item.name}</Text>
           </Left>
           <Right>
-            <Icon active name={'check'} type={'FontAwesome'} />
+            <Icon name={'md-' + item.icon} active />
           </Right>
         </ListItem>
       );
