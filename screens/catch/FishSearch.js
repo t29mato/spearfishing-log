@@ -77,7 +77,7 @@ export default class FishSearch {
         this.dictionary.push({ index: f.katakana[0], fishes: [f] });
         // Notion: Creating unique id with (i * -1).
         // It can be 0 if you don't care warning messages.
-        // Unique id must be provided for FlatList keyExtractor.
+        // Unique id should be provided for FlatList keyExtractor.
         this.fish.push({ id: i * -1, header: true, name: f.katakana[0] });
       }
       f.header = false;
