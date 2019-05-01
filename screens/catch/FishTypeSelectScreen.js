@@ -36,7 +36,7 @@ export default class FishTypeSelectScreen extends React.Component<Props, State> 
   };
   state = {
     keyword: '',
-    fish: this.search.fish,
+    fish: this.search.allFish(),
     fishTypeId: this.props.navigation.getParam('catch').fishTypeId,
   };
 
@@ -70,7 +70,7 @@ export default class FishTypeSelectScreen extends React.Component<Props, State> 
                 placeholder={'キーワードを入力すると絞り込めます'}
                 onChangeText={text => {
                   if (!text) {
-                    this.setState({ fish: this.search.fish });
+                    this.setState({ fish: this.search.allFish() });
                     return;
                   }
                   if (this.search.isInvalidKeyword(text)) {
@@ -87,7 +87,7 @@ export default class FishTypeSelectScreen extends React.Component<Props, State> 
               {'絞り込み結果：' +
                 this.state.fish.length +
                 '種類（合計' +
-                this.search.fish.length +
+                this.search.allFish().length +
                 '種類）'}
             </Text>
           </CardItem>

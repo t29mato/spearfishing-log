@@ -45,6 +45,14 @@ export default class FishSearch {
     return keyword.match(/[^ぁ-んァ-ヶー\s]/);
   }
 
+  /**
+   * Get all fish.
+   * @return {Object} [all fish]
+   */
+  allFish() {
+    return this.fish;
+  }
+
   /******************************
    * Private methods
    ******************************/
