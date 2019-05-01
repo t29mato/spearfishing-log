@@ -16,149 +16,141 @@ import {
   Item,
   Input,
   CardItem,
+  Separator,
 } from 'native-base';
 import { FlatList } from 'react-native';
-import fishTypes from '../../data/master/fishTypes';
+import FishSearch from './FishSearch';
 
 type Props = {
   navigation: Object,
 };
 type State = {
   keyword: string,
-  fishTypes: Object,
-  fishDictionary: Object,
+  fish: Object,
   fishTypeId: ?number,
 };
 
-function _createFishDictionary() {
-  let dictionary = [];
-  for (let i = 0; i < fishTypes.length; i++) {
-    let fish = fishTypes[i];
-    let found = false;
-    dictionary.forEach(d => {
-      if (d.index === fish.katakana[0]) {
-        found = true;
-        d.fishes.push(fish);
-      }
-    });
-    if (!found) {
-      dictionary.push({ index: fish.katakana[0], fishes: [fish] });
-    }
-  }
-  return dictionary;
-}
-
-function _convertToKatakana(text) {
-  return text.replace(/[\u3041-\u3096]/g, function(match) {
-    var chr = match.charCodeAt(0) + 0x60;
-    return String.fromCharCode(chr);
-  });
-}
-
-function _indexFilteredFish(dictionary, index) {
-  for (let i = 0; i < dictionary.length; i++) {
-    if (dictionary[i].index === index) {
-      return dictionary[i];
-    }
-  }
-  return [];
-}
-
-function _filterFish(dictionary, text) {
-  let fishTypesFiltered = [];
-  const kana = _convertToKatakana(text);
-  const filteredFish = _indexFilteredFish(dictionary, kana[0]);
-  filteredFish.fishes.forEach(fish => {
-    if (fish.katakana.indexOf(kana) > -1) {
-      fishTypesFiltered.push(fish);
-    }
-  });
-  return fishTypesFiltered;
-}
-
 export default class FishTypeSelectScreen extends React.Component<Props, State> {
+  search = new FishSearch();
   static navigationOptions = {
     header: null,
   };
   state = {
     keyword: '',
-    fishTypes,
-    fishDictionary: _createFishDictionary(),
+    fish: this.search.allFish(),
     fishTypeId: this.props.navigation.getParam('catch').fishTypeId,
   };
+
+  /******************************
+   * Main render method
+   ******************************/
 
   render() {
     return (
       <Container>
-        <Header>
-          <Left>
-            <Button
-              transparent
-              onPress={() => {
-                this.props.navigation.state.params.returnFishTypeId(this.state.fishTypeId);
-                this.props.navigation.pop();
-              }}>
-              <Icon name="arrow-back" />
-            </Button>
-          </Left>
-          <Body>
-            <Title>魚の種類を選択</Title>
-          </Body>
-          <Right>
-            <Button transparent onPress={() => this.setState({ fishTypeId: null })}>
-              <Text>クリア</Text>
-            </Button>
-          </Right>
-        </Header>
+        {this._header()}
         <Content>
-          <CardItem>
-            <Item regular>
-              <Input
-                placeholder={'キーワードを入力すると絞り込めます'}
-                onChangeText={text => {
-                  if (!text) {
-                    this.setState({ fishTypes });
-                    return;
-                  }
-                  if (text.match(/[^ぁ-んァ-ヶー\s]/)) {
-                    this.setState({ fishTypes: [] });
-                    return;
-                  }
-                  this.setState({ fishTypes: _filterFish(this.state.fishDictionary, text) });
-                }}
-              />
-            </Item>
-          </CardItem>
-          <CardItem>
-            <Text>
-              {'絞り込み結果：' +
-                this.state.fishTypes.length +
-                '種類（合計' +
-                fishTypes.length +
-                '種類）'}
-            </Text>
-          </CardItem>
-          <FlatList
-            data={this.state.fishTypes}
-            extraData={this.state.fishTypeId}
-            renderItem={({ item }) => (
-              <ListItem
-                selected={item.id === this.state.fishTypeId}
-                onPress={() => {
-                  this.setState({ fishTypeId: item.id });
-                }}>
-                <Left>
-                  <Text>{item.katakana}</Text>
-                </Left>
-                <Right>
-                  <Text>●</Text>
-                </Right>
-              </ListItem>
-            )}
-            keyExtractor={item => item.id.toString()}
-          />
+          <CardItem>{this._searchInput()}</CardItem>
+          <CardItem>{this._searchInfo()}</CardItem>
+          {this._fishList()}
         </Content>
       </Container>
     );
   }
+
+  /******************************
+   * Sub render methods
+   ******************************/
+
+  _fishItem = ({ item }) => {
+    if (item.header) {
+      return (
+        <Separator>
+          <Text>{item.name}</Text>
+        </Separator>
+      );
+    } else {
+      return (
+        <ListItem
+          selected={item.id === this.state.fishTypeId}
+          onPress={() => {
+            this.setState({ fishTypeId: item.id });
+          }}>
+          <Left>
+            <Text>{item.katakana}</Text>
+          </Left>
+          <Right>
+            <Icon name="md-checkmark-circle" />
+          </Right>
+        </ListItem>
+      );
+    }
+  };
+
+  _fishList = () => (
+    <FlatList
+      data={this.state.fish}
+      extraData={this.state.fishTypeId}
+      renderItem={this._fishItem}
+      keyExtractor={item => item.id.toString()}
+      initialNumToRender={50}
+      onEndReached={this.handleLoadMore}
+      onEndReachedThreshold={50}
+      windowSize={100}
+    />
+  );
+
+  _searchInfo = () => (
+    <Text>
+      {'絞り込み結果：' +
+        this.state.fish.length +
+        '種類（合計' +
+        this.search.allFish().length +
+        '種類）'}
+    </Text>
+  );
+
+  _searchInput = () => (
+    <Item regular>
+      <Input
+        placeholder={'キーワードを入力すると絞り込めます'}
+        onChangeText={text => {
+          if (!text) {
+            this.setState({ fish: this.search.allFish() });
+            return;
+          }
+          if (this.search.isInvalidKeyword(text)) {
+            this.setState({ fish: [] });
+            return;
+          }
+          this.setState({ fish: this.search.filter(text) });
+        }}
+      />
+    </Item>
+  );
+
+  _header = () => (
+    <Header>
+      <Left>
+        <Button
+          transparent
+          onPress={() => {
+            this.props.navigation.state.params.returnFishTypeId(this.state.fishTypeId);
+            this.props.navigation.pop();
+          }}>
+          <Icon name="arrow-back" />
+        </Button>
+      </Left>
+      <Body>
+        <Title>魚の種類を選択</Title>
+      </Body>
+      <Right>{this._clear()}</Right>
+    </Header>
+  );
+
+  _clear = () => (
+    <Button transparent onPress={() => this.setState({ fishTypeId: null })}>
+      <Text>クリア</Text>
+    </Button>
+  );
 }
