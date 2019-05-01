@@ -11,8 +11,9 @@ export default class FishSearch {
    *  and is for quick search.
    */
   constructor() {
-    this.fish = this._createFishListWithHeader(fishTypes);
-    this.dictionary = this._createFishDictionary();
+    this.fish = [];
+    this.dictionary = [];
+    this._initializeFishLists(fishTypes);
   }
 
   /******************************
@@ -25,8 +26,8 @@ export default class FishSearch {
    * @return {Object}         [filtered fish]
    */
   filter(keyword) {
-    let filtered = [];
     const kana = this._convertToKatakana(keyword);
+    let filtered = [{ id: 0, header: true, name: kana[0] }];
     const indexed = this._indexFilteredFish(this.dictionary, kana[0]);
     indexed.fishes.forEach(fish => {
       if (fish.katakana.indexOf(kana) > -1) {
@@ -62,54 +63,26 @@ export default class FishSearch {
    * @param  {Array} fish [fish list]
    * @return {Array}      [fish list with header]
    */
-  _createFishListWithHeader(fish) {
-    let list = [];
-    let indexList = [];
+  _initializeFishLists(fish) {
     for (let i = 0; i < fish.length; i++) {
       let found = false;
       let f = fish[i];
-      indexList.forEach(l => {
-        if (l === f.katakana[0]) {
+      this.dictionary.forEach(d => {
+        if (d.index === f.katakana[0]) {
           found = true;
+          d.fishes.push(f);
         }
       });
       if (!found) {
-        indexList.push(f.katakana[0]);
+        this.dictionary.push({ index: f.katakana[0], fishes: [f] });
         // Notion: Creating unique id with (i * -1).
         // It can be 0 if you don't care warning messages.
         // Unique id must be provided for FlatList keyExtractor.
-        list.push({ id: i * -1, header: true, name: f.katakana[0] });
+        this.fish.push({ id: i * -1, header: true, name: f.katakana[0] });
       }
       f.header = false;
-      list.push(f);
+      this.fish.push(f);
     }
-    return list;
-  }
-
-  /**
-   * Create fish dictionary.
-   * Fish data is grouped by the first one string.
-   * @return {Object} [indexed fish dictionary]
-   */
-  _createFishDictionary() {
-    let dictionary = [];
-    for (let i = 0; i < this.fish.length; i++) {
-      if (this.fish[i].header) {
-        continue;
-      }
-      let fish = this.fish[i];
-      let found = false;
-      dictionary.forEach(d => {
-        if (d.index === fish.katakana[0]) {
-          found = true;
-          d.fishes.push(fish);
-        }
-      });
-      if (!found) {
-        dictionary.push({ index: fish.katakana[0], fishes: [fish] });
-      }
-    }
-    return dictionary;
   }
 
   /**
