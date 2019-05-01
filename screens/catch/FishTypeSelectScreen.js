@@ -18,72 +18,25 @@ import {
   CardItem,
 } from 'native-base';
 import { FlatList } from 'react-native';
-import fishTypes from '../../data/master/fishTypes';
+import FishSearch from './FishSearch';
 
 type Props = {
   navigation: Object,
 };
 type State = {
   keyword: string,
-  fishTypes: Object,
-  fishDictionary: Object,
+  fish: Object,
   fishTypeId: ?number,
 };
 
-function _createFishDictionary() {
-  let dictionary = [];
-  for (let i = 0; i < fishTypes.length; i++) {
-    let fish = fishTypes[i];
-    let found = false;
-    dictionary.forEach(d => {
-      if (d.index === fish.katakana[0]) {
-        found = true;
-        d.fishes.push(fish);
-      }
-    });
-    if (!found) {
-      dictionary.push({ index: fish.katakana[0], fishes: [fish] });
-    }
-  }
-  return dictionary;
-}
-
-function _convertToKatakana(text) {
-  return text.replace(/[\u3041-\u3096]/g, function(match) {
-    var chr = match.charCodeAt(0) + 0x60;
-    return String.fromCharCode(chr);
-  });
-}
-
-function _indexFilteredFish(dictionary, index) {
-  for (let i = 0; i < dictionary.length; i++) {
-    if (dictionary[i].index === index) {
-      return dictionary[i];
-    }
-  }
-  return [];
-}
-
-function _filterFish(dictionary, text) {
-  let fishTypesFiltered = [];
-  const kana = _convertToKatakana(text);
-  const filteredFish = _indexFilteredFish(dictionary, kana[0]);
-  filteredFish.fishes.forEach(fish => {
-    if (fish.katakana.indexOf(kana) > -1) {
-      fishTypesFiltered.push(fish);
-    }
-  });
-  return fishTypesFiltered;
-}
-
 export default class FishTypeSelectScreen extends React.Component<Props, State> {
+  search = new FishSearch();
   static navigationOptions = {
     header: null,
   };
   state = {
     keyword: '',
-    fishTypes,
-    fishDictionary: _createFishDictionary(),
+    fish: this.search.fish,
     fishTypeId: this.props.navigation.getParam('catch').fishTypeId,
   };
 
@@ -117,14 +70,14 @@ export default class FishTypeSelectScreen extends React.Component<Props, State> 
                 placeholder={'キーワードを入力すると絞り込めます'}
                 onChangeText={text => {
                   if (!text) {
-                    this.setState({ fishTypes });
+                    this.setState({ fish: this.search.fish });
                     return;
                   }
-                  if (text.match(/[^ぁ-んァ-ヶー\s]/)) {
-                    this.setState({ fishTypes: [] });
+                  if (this.search.isInvalidKeyword(text)) {
+                    this.setState({ fish: [] });
                     return;
                   }
-                  this.setState({ fishTypes: _filterFish(this.state.fishDictionary, text) });
+                  this.setState({ fish: this.search.filter(text) });
                 }}
               />
             </Item>
@@ -132,14 +85,14 @@ export default class FishTypeSelectScreen extends React.Component<Props, State> 
           <CardItem>
             <Text>
               {'絞り込み結果：' +
-                this.state.fishTypes.length +
+                this.state.fish.length +
                 '種類（合計' +
-                fishTypes.length +
+                this.search.fish.length +
                 '種類）'}
             </Text>
           </CardItem>
           <FlatList
-            data={this.state.fishTypes}
+            data={this.state.fish}
             extraData={this.state.fishTypeId}
             renderItem={({ item }) => (
               <ListItem
